@@ -1,4 +1,4 @@
-import java.util.Objects;
+package model;
 
 public class Task {
     private String name;
@@ -22,20 +22,8 @@ public class Task {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return code == task.code && Objects.equals(name, task.name) && Objects.equals(description.length(), task.description.length()) && status == task.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, code, status);
-    }
-
-    @Override
     public String toString() {
-        return "Task{" +
+        return "model.Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", code=" + code +
