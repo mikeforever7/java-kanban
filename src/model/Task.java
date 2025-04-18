@@ -1,23 +1,25 @@
 package model;
 
+import java.util.Objects;
+
 public class Task {
     private String name;
     private String description;
-    private int code;
+    private int id;
     private TaskStatus status;
 
 
-    public Task (int code, String name, String description) {
+    public Task (int id, String name, String description) {
         this.name = name;
         this.description = description;
-        this.code = code;
+        this.id = id;
         status = TaskStatus.NEW;
     }
 
-    public Task (int code, String name, String description, TaskStatus status) {
+    public Task (int id, String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
-        this.code = code;
+        this.id = id;
         this.status = status;
     }
 
@@ -26,17 +28,29 @@ public class Task {
         return "model.Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", code=" + code +
+                ", id=" + id +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setDescription(String description) {
