@@ -1,13 +1,9 @@
 package manager;
 
 import model.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-
 import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -153,7 +149,4 @@ class InMemoryTaskManagerTest {
         assertEquals("Описание", epic.getDescription());
         assertEquals(TaskStatus.NEW, epic.getStatus());
     }
-
-
-
 }

@@ -1,6 +1,5 @@
 package main;
 
-
 import manager.Managers;
 import manager.TaskManager;
 import model.TaskStatus;
@@ -49,6 +48,5 @@ public class Main {
         taskManager.printSubtasks();  //Пустота после удаление всех подзадач
         taskManager.printEpics();     //Эпики с измененными статусами из-за удаления подзадач
         taskManager.getHistory();     //История просмотра
-
     }
 }

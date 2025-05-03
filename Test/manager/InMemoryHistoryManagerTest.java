@@ -1,9 +1,7 @@
 package manager;
 
 import model.Task;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryHistoryManagerTest {
 
     TaskManager taskManager = Managers.getDefault();
-    InMemoryHistoryManager historyManager;
     ArrayList<Task> history;
-
 
     @Test
     public void deleteOne_When11TaskAdded() {

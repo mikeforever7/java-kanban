@@ -7,8 +7,6 @@ import java.util.ArrayList;
 public class InMemoryHistoryManager implements HistoryManager {
     private ArrayList<Task> history = new ArrayList<>();
 
-
-
     @Override
     public ArrayList<Task> getHistory() {
         System.out.println("Последние 10 просмотров:");
