@@ -5,11 +5,12 @@ import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class  InMemoryTaskManager implements TaskManager {
 
-    private static int counter = 0;
+    private int counter = 0;
 
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
@@ -18,8 +19,8 @@ public class  InMemoryTaskManager implements TaskManager {
     HistoryManager historyManager = new InMemoryHistoryManager();
 
     //Получить историю
-    public void getHistory() {
-        historyManager.getHistory();
+    public ArrayList<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     //Проверка выполнения подзадач
@@ -42,7 +43,6 @@ public class  InMemoryTaskManager implements TaskManager {
     //Обновление задач
     @Override
     public void updateTask(int id, String newName, String newDescription, TaskStatus newStatus) {
- //     Task task = tasks.get(id);  Старая версия кода. Думаю строчка ниже лучше, так как влияет на историю просмотра
         Task task = getTask(id);
         task.setName(newName);
         task.setDescription(newDescription);
@@ -51,7 +51,6 @@ public class  InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(int id, String newName, String newDescription) {
-  //    Epic epic = epics.get(id); Старая версия кода. Думаю строчка ниже лучше, так как влияет на историю просмотра
         Epic epic = getEpic(id);
         epic.setName(newName);
         epic.setDescription(newDescription);
@@ -59,8 +58,6 @@ public class  InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(int id, String newName, String newDescription, TaskStatus newStatus) {
-
- //     Subtask subtask = subtasks.get(id); Старая версия кода. Думаю строчка ниже лучше, так как влияет на историю просмотра
         Subtask subtask = getSubtask(id);
         subtask.setName(newName);
         subtask.setDescription(newDescription);
@@ -136,7 +133,7 @@ public class  InMemoryTaskManager implements TaskManager {
     }
 
 
-    private static void getID() {
+    private  void getID() {
         counter++;
     }
 
@@ -192,6 +189,7 @@ public class  InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
     public HashMap<Integer, Task> getTasks() {
         return tasks;
     }

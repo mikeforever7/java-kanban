@@ -1,17 +1,17 @@
 package manager;
 
 import model.*;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-    private static TaskManager taskManager;
+    private TaskManager taskManager;
 
     @BeforeEach
     public void beforeEach() {
@@ -27,23 +27,6 @@ class InMemoryTaskManagerTest {
         assertEquals("Первая задача", savedTask.getName(), "Задачи не совпадают");
         assertEquals("Описание", savedTask.getDescription(), "Задачи не совпадают");
         assertEquals(TaskStatus.NEW, savedTask.getStatus(), "Статусы не совпадают");
-
-
-
-
-//        Task task = new Task("Test addNewTask", "Test addNewTask description", NEW);
-//        final int taskId = taskManager.addNewTask(task);
-//
-//        final Task savedTask = taskManager.getTask(taskId);
-//
-//        assertNotNull(savedTask, "Задача не найдена.");
-//        assertEquals(task, savedTask, "Задачи не совпадают.");
-//
-//        final List<Task> tasks = taskManager.getTasks();
-//
-//        assertNotNull(tasks, "Задачи не возвращаются.");
-//        assertEquals(1, tasks.size(), "Неверное количество задач.");
-//        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
     }
 
     @Test
@@ -79,6 +62,98 @@ class InMemoryTaskManagerTest {
         assertEquals(2, tasks.size(), "Неверное количество задач");
         assertEquals(savedTask, tasks.get(2), "Задачи не равны");
     }
+
+    @Test
+    public void null_WhenTaskDeleted() {
+        taskManager.addTask("Задача первая", "Описание");
+        Task task = taskManager.getTask(1);
+        assertNotNull(task);  //Проверка, что задача существует
+        taskManager.deleteTaskById(1);
+        assertNull(taskManager.getTask(1));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void null_WhenEpicDeleted() {
+        taskManager.addEpic("Эпик", "Описание");
+        Epic epic = taskManager.getEpic(1);
+        assertNotNull(epic);  //Проверка, что задача существует
+        taskManager.deleteEpicById(1);
+        assertNull(taskManager.getEpic(1));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void null_WhenSubtaskDeleted() {
+        taskManager.addEpic("Эпик", "для подзадачи");
+        taskManager.addSubtask("Задача первая", "Описание", 1);
+        Subtask subtask = taskManager.getSubtask(2);
+        assertNotNull(subtask);  //Проверка, что задача существует
+        taskManager.deleteSubtaskById(2);
+        assertNull(taskManager.getSubtask(2));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void null_WhenAllTasksDeleted() {
+        taskManager.addTask("Задача первая", "Описание");
+        Task task = taskManager.getTask(1);
+        assertNotNull(task);  //Проверка, что задача существует
+        taskManager.deleteAllTasks();
+        assertNull(taskManager.getTask(1));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void null_WhenAllEpicsDeleted() {
+        taskManager.addEpic("Эпик", "Описание");
+        Epic epic = taskManager.getEpic(1);
+        assertNotNull(epic);  //Проверка, что задача существует
+        taskManager.deleteAllEpics();
+        assertNull(taskManager.getEpic(1));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void null_WhenAllSubtasksDeleted() {
+        taskManager.addEpic("Эпик", "для подзадачи");
+        taskManager.addSubtask("Задача первая", "Описание", 1);
+        Subtask subtask = taskManager.getSubtask(2);
+        assertNotNull(subtask);  //Проверка, что задача существует
+        taskManager.deleteAllSubtasks();
+        assertNull(taskManager.getSubtask(2));  //Проверка, что задача удалена
+    }
+
+    @Test
+    public void shouldEqual_WhenTaskUpdated() {
+        taskManager.addTask("Задача первая", "Описание");
+        Task task = taskManager.getTask(1);
+        taskManager.updateTask(1, "Задача изменена", "Описание", TaskStatus.IN_PROGRESS);
+        assertEquals("Задача изменена", task.getName());
+        assertEquals("Описание", task.getDescription());
+        assertEquals(TaskStatus.IN_PROGRESS, task.getStatus());
+    }
+
+    @Test
+    public void shouldEqual_WhenSubTaskUpdated() {
+        taskManager.addEpic("Эпик", "Для подзадачи");
+        taskManager.addSubtask("Задача первая", "Описание", 1);
+        Subtask subtask = taskManager.getSubtask(2);
+        taskManager.updateSubtask(2, "Задача изменена", "Описание", TaskStatus.DONE);
+        assertEquals("Задача изменена", subtask.getName());
+        assertEquals("Описание", subtask.getDescription());
+        assertEquals(TaskStatus.DONE, subtask.getStatus());
+        assertEquals(TaskStatus.DONE, taskManager.getEpic(1).getStatus()); //Заодно проверим, что статус эпика тоже
+        // изменился
+        taskManager.addSubtask("Для проверки", "статуса эпика",1);
+        assertEquals(TaskStatus.IN_PROGRESS, taskManager.getEpic(1).getStatus()); //Проверяем статус эпика IN_PROGRESS
+    }
+
+    @Test
+    public void shouldEqual_WhenEpicUpdated() {
+        taskManager.addEpic("Эпик", "Описание");
+        Epic epic = taskManager.getEpic(1);
+        taskManager.updateEpic(1, "Задача изменена", "Описание");
+        assertEquals("Задача изменена", epic.getName());
+        assertEquals("Описание", epic.getDescription());
+        assertEquals(TaskStatus.NEW, epic.getStatus());
+    }
+
 
 
 }

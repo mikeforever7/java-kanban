@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public interface TaskManager {
 
-    void getHistory();
+    ArrayList<Task> getHistory();
 
     //Проверка выполнения подзадач
     TaskStatus checkEpicStatus(int epicId);
