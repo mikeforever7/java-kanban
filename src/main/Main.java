@@ -1,14 +1,17 @@
 package main;
 
+
+import manager.Managers;
 import manager.TaskManager;
 import model.TaskStatus;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
         //Создаем
         taskManager.addTask("Первая задача", "Создана");
+//        taskManager.getTask(1);
         taskManager.addTask("Вторая задача", "Тоже создана");
         taskManager.addEpic("Первый эпик", "Создан");
         taskManager.addSubtask("Первая подзадача" ,"Первого эпика", 3);
@@ -16,9 +19,9 @@ public class Main {
         taskManager.addEpic("Второй эпик", "Создан");
         taskManager.addSubtask("Первая подзадача", "Второго эпика", 6);
         //Печатаем
-        taskManager.printTasks();
-        taskManager.printEpics();
-        taskManager.printSubtasks();
+//        taskManager.printTasks();
+//        taskManager.printEpics();
+//        taskManager.printSubtasks();
         //Изменяем
         taskManager.updateTask(1, "Первая задача", "В работе" , TaskStatus.IN_PROGRESS);
         taskManager.updateTask(2, "Вторая задача", "Выполнена" , TaskStatus.DONE);
@@ -29,13 +32,22 @@ public class Main {
                 TaskStatus.DONE);
         taskManager.updateEpic(6, "Второй эпик", "Выполнен(так как выполнена подзадача)");
         taskManager.updateSubtask(7, "Первая подзадача", "Выполнена", TaskStatus.DONE);
-        //Печатаем
+
+        //Удаляем единственную подзадачу, статус эпика также меняется на New, так как пустой
+//        taskManager.updateEpic(6, "Второй эпик", "Новый, так как подзадач нет");
+//        taskManager.deleteSubtaskById(7);
+//        //Вызываем просто для истории
+//        taskManager.getTask(2);
+//        taskManager.getSubtask(5);
+//        taskManager.getEpic(3);
+//        //Печатаем
         taskManager.printTasks();
         taskManager.printEpics();
         taskManager.printSubtasks();
-        //Удаляем единственную подзадачу, статус эпика также меняется на New, так как пустой
-        taskManager.updateEpic(6, "Второй эпик", "Новый, так как подзадач нет");
-        taskManager.deleteSubtaskById(7);
+        taskManager.deleteAllSubtasks();
+        taskManager.printSubtasks();
         taskManager.printEpics();
+//        taskManager.getHistory();
+
     }
 }
