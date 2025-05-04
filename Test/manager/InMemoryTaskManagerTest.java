@@ -3,7 +3,7 @@ package manager;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.HashMap;
+import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -53,7 +53,7 @@ class InMemoryTaskManagerTest {
         taskManager.addTask("Задача первая", "Описание");
         taskManager.addTask("Задача вторая", "Описание");
         Task savedTask = taskManager.getTask(2);
-        HashMap<Integer, Task> tasks = taskManager.getTasks();
+        Map<Integer, Task> tasks = taskManager.getTasks();
         assertNotNull(tasks.get(1), "Задачи не возвращаются.");
         assertEquals(2, tasks.size(), "Неверное количество задач");
         assertEquals(savedTask, tasks.get(2), "Задачи не равны");

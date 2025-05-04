@@ -3,12 +3,14 @@ package manager;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private ArrayList<Task> history = new ArrayList<>();
+    private List<Task> history = new ArrayList<>();
+    private static final int HISTORY_LIST_SIZE = 10;
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         System.out.println("Последние 10 просмотров:");
         int i =1;
         for (Task task : history) {
@@ -20,7 +22,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (history.size() == 10) {
+        if (history.size() == HISTORY_LIST_SIZE) {
             history.remove(0);
         }
         history.add(task);

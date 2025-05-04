@@ -5,12 +5,12 @@ import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
 
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 
     //Проверка выполнения подзадач
     TaskStatus checkEpicStatus(int epicId);
@@ -23,7 +23,7 @@ public interface TaskManager {
     void updateSubtask(int id, String newName, String newDescription, TaskStatus newStatus);
 
     //Получить по id
-    <T> Task getTask(int id);
+    Task getTask(int id);
 
     Epic getEpic(int id);
 
@@ -60,5 +60,5 @@ public interface TaskManager {
     //Печать списка подзадач в эпике
     void printSubtasksByEpic(int epicId);
 
-    HashMap<Integer, Task> getTasks();
+    Map<Integer, Task> getTasks();
 }

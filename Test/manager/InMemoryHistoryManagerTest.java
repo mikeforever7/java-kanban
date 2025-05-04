@@ -2,14 +2,16 @@ package manager;
 
 import model.Task;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
     TaskManager taskManager = Managers.getDefault();
-    ArrayList<Task> history;
+    /*В уроках особо не было про Collection и List. Если я правильно понял, здесь Collection я сделать
+    * не могу. Так как дальше мне требуется метод get(index). Поэтому сделал List везде*/
+    List<Task> history;
 
     @Test
     public void deleteOne_When11TaskAdded() {
