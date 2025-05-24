@@ -38,5 +38,4 @@ public class Main {
         taskManager.deleteAllEpics();
         taskManager.printHistory();
     }
-    //Когда создаем подзадачу всегда дергается эпик, и отображается в истории, хотя подзадача нет, так и нужно?
 }

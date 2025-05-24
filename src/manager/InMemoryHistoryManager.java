@@ -37,7 +37,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
-    public void remove (int id) {
+    public void remove(int id) {
         removeNode(historyMap.get(id));
     }
 
