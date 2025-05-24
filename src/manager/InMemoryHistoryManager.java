@@ -9,14 +9,14 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private Map<Integer, Node<Task>> historyMap = new HashMap<>();
-    private Node<Task> head;
-    private Node<Task> tail;
+    private Map<Integer, Node> historyMap = new HashMap<>();
+    private Node head;
+    private Node tail;
     private int size = 0;
 
     public void linkLast(Task task) {
-        Node<Task> oldTail = tail;
-        Node<Task> newNode = new Node<>(oldTail, task, null);
+        Node oldTail = tail;
+        Node newNode = new Node(oldTail, task, null);
         tail = newNode;
         historyMap.put(task.getId(), newNode);
         if (oldTail == null) {
@@ -29,7 +29,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
-        Node<Task> element = head;
+        Node element = head;
         while (element != null) {
             tasks.add(element.task);
             element = element.next;
@@ -41,10 +41,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(historyMap.get(id));
     }
 
-    public void removeNode(Node<Task> node) {
+    public void removeNode(Node node) {
         if (!(node == null)) {
-            final Node<Task> next = node.next;
-            final Node<Task> prev = node.prev;
+            final Node next = node.next;
+            final Node prev = node.prev;
             node.task = null;
             if (head == node && tail == node) {
                 tail = null;
@@ -99,12 +99,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    public class Node<Task> {
+    public class Node {
         public Task task;
-        public Node<Task> next;
-        public Node<Task> prev;
+        public Node next;
+        public Node prev;
 
-        public Node(Node<Task> prev, Task task, Node<Task> next) {
+        public Node(Node prev, Task task, Node next) {
             this.prev = prev;
             this.task = task;
             this.next = next;
