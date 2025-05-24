@@ -60,5 +60,8 @@ public interface TaskManager {
     //Печать списка подзадач в эпике
     void printSubtasksByEpic(int epicId);
 
+    //Печать истории просмотров
+    void printHistory();
+
     Map<Integer, Task> getTasks();
 }
