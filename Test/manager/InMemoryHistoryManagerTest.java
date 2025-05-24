@@ -9,19 +9,37 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryHistoryManagerTest {
 
     TaskManager taskManager = Managers.getDefault();
-    /*В уроках особо не было про Collection и List. Если я правильно понял, здесь Collection я сделать
-    * не могу. Так как дальше мне требуется метод get(index). Поэтому сделал List везде*/
+
     List<Task> history;
 
     @Test
-    public void deleteOne_When11TaskAdded() {
-        for (int i = 1; i <= 11; i++) {
+    public void variablesMustBeEqual_WhenAddNewTaskToHistoryWithOrder() {
+        for (int i = 1; i <= 5; i++) {
             taskManager.addTask("Задача", "Описание");
             taskManager.getTask(i);
         }
         history = taskManager.getHistory();
-        Task task = history.get(0);
+        Task task = history.get(3);
         System.out.println(task);
-        assertEquals(2, task.getId()); //Первая задача удалилась, теперь первая с id2
+        assertEquals(4, task.getId()); //Четвертая просмотреная задача совпадет
     }
+
+    @Test
+    public void firstViewTaskMustRemoveFromHistory_WhenGetTaskTwice() {
+        for (int i = 1; i <= 5; i++) {
+            taskManager.addTask("Задача", "Описание");
+            taskManager.getTask(i);
+        }
+        taskManager.getTask(2); // Еще раз просматриваем вторую задачу
+        taskManager.getTask(1); // Еще раз просматриваем первую задачу
+        history = taskManager.getHistory();
+        Task task = history.get(4);
+        System.out.println(task);
+        assertEquals(1, task.getId()); //Первая задача отображается последней
+        assertNotEquals(1, history.get(0).getId()); // Первая задача уже с другим ID
+        assertEquals(5, history.size()); // Размер списка не изменился,
+        // так как дважды просмотренная задача удалена
+
+    }
+
 }
