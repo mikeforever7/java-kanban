@@ -50,18 +50,5 @@ public interface TaskManager {
 
     void deleteSubtaskById(int id);
 
-    //Печать списков задач
-    void printTasks();
-
-    void printEpics();
-
-    void printSubtasks();
-
-    //Печать списка подзадач в эпике
-    void printSubtasksByEpic(int epicId);
-
-    //Печать истории просмотров
-    void printHistory();
-
     Map<Integer, Task> getTasks();
 }

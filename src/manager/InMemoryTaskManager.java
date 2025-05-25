@@ -146,7 +146,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     private void getID() {
         counter++;
     }
@@ -180,44 +179,9 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(id);
     }
 
-    //Печать списков задач
-    @Override
-    public void printTasks() {
-        for (Integer task : tasks.keySet()) {
-            System.out.println("Task " + task + ", Задача " + tasks.get(task));
-        }
-    }
-
-    @Override
-    public void printEpics() {
-        for (Integer epic : epics.keySet()) {
-            System.out.println("Epic " + epic + ", Задача " + epics.get(epic));
-        }
-    }
-
-    @Override
-    public void printSubtasks() {
-        for (Integer subtask : subtasks.keySet()) {
-            System.out.println("Subtask " + subtask + ", Задача " + subtasks.get(subtask));
-        }
-    }
-
-    //Печать списка подзадач в эпике
-    @Override
-    public void printSubtasksByEpic(int epicId) {
-        Epic epic = getEpic(epicId);
-        for (Subtask subtask : epic.getSubtasksInEpic()) {
-            System.out.println(subtask);
-        }
-    }
-
     @Override
     public Map<Integer, Task> getTasks() {
         return tasks;
-    }
-
-    public void printHistory() {
-        historyManager.printHistory();
     }
 }
 

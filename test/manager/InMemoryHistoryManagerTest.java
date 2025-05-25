@@ -1,16 +1,23 @@
 package manager;
 
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    TaskManager taskManager = Managers.getDefault();
+    TaskManager taskManager;
 
     List<Task> history;
+
+    @BeforeEach
+    public void beforeEach() {
+        taskManager = Managers.getDefault();
+    }
 
     @Test
     public void variablesMustBeEqual_WhenAddNewTaskToHistoryWithOrder() {

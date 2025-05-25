@@ -3,8 +3,10 @@ package manager;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.Map;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -137,7 +139,7 @@ class InMemoryTaskManagerTest {
         assertEquals(TaskStatus.DONE, subtask.getStatus());
         assertEquals(TaskStatus.DONE, taskManager.getEpic(1).getStatus()); //Заодно проверим, что статус эпика тоже
         // изменился
-        taskManager.addSubtask("Для проверки", "статуса эпика",1);
+        taskManager.addSubtask("Для проверки", "статуса эпика", 1);
         assertEquals(TaskStatus.IN_PROGRESS, taskManager.getEpic(1).getStatus()); //Проверяем статус эпика IN_PROGRESS
     }
 
@@ -163,8 +165,8 @@ class InMemoryTaskManagerTest {
     @Test
     public void epicDoNotHaveSubtask_WhenSubtaskDelete() {
         taskManager.addEpic("Эпик", "Создан");
-        taskManager.addSubtask("Подзадача","C ID2",1);
-        taskManager.addSubtask("Подзадача", " С ID3",1);
+        taskManager.addSubtask("Подзадача", "C ID2", 1);
+        taskManager.addSubtask("Подзадача", " С ID3", 1);
         Epic epic = taskManager.getEpic(1);
         List<Subtask> subtasksInEpic = epic.getSubtasksInEpic();
         assertEquals(2, subtasksInEpic.size()); //Список внутри эпика хранит две подзадачи

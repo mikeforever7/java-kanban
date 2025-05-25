@@ -2,6 +2,9 @@ package main;
 
 import manager.Managers;
 import manager.TaskManager;
+import model.*;
+
+import java.util.List;
 
 public class Main {
 
@@ -21,20 +24,35 @@ public class Main {
         taskManager.getTask(1);
         taskManager.getSubtask(7);
         taskManager.getSubtask(6);
-        taskManager.printHistory();
+        printHistory(taskManager);
         taskManager.getTask(1);
-        taskManager.printHistory();
+        printHistory(taskManager);
         taskManager.getSubtask(5);
-        taskManager.printHistory();
+        printHistory(taskManager);
         taskManager.getSubtask(6);
-        taskManager.printHistory();
+        printHistory(taskManager);
         taskManager.getEpic(4);
-        taskManager.printHistory();
+        printHistory(taskManager);
         // Удаляем задачу и проверяем, что и в истории ее нет
         taskManager.deleteTaskById(1);
-        taskManager.printHistory();
+        printHistory(taskManager);
         // Удаляем эпик с тремя подзадачами и проверяем, что в истории они также удалены
         taskManager.deleteAllEpics();
-        taskManager.printHistory();
+        printHistory(taskManager);
+    }
+
+    private static void printHistory(TaskManager taskManager) {
+        List<Task> history = taskManager.getHistory();
+        if (history.isEmpty()) {
+            System.out.println("История просмотров пуста.");
+            return;
+        }
+        System.out.println("История просмотров:");
+        System.out.println(history.size());
+        int index = 1;
+        for (Task task : history) {
+            System.out.println(index + ". " + task);
+            index++;
+        }
     }
 }

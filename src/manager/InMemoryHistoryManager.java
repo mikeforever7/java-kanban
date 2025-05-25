@@ -12,7 +12,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Map<Integer, Node> historyMap = new HashMap<>();
     private Node head;
     private Node tail;
-    private int size = 0;
 
     public void linkLast(Task task) {
         Node oldTail = tail;
@@ -24,7 +23,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             oldTail.next = newNode;
         }
-        size++;
     }
 
     public List<Task> getTasks() {
@@ -39,6 +37,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public void remove(int id) {
         removeNode(historyMap.get(id));
+        historyMap.remove(id);
     }
 
     public void removeNode(Node node) {
@@ -59,16 +58,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 next.prev = prev;
                 prev.next = next;
             }
-            size--;
         }
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     @Override
@@ -81,21 +71,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (!(task == null)) {
             remove(task.getId());
             linkLast(task);
-        }
-    }
-
-    @Override
-    public void printHistory() {
-        List<Task> history = getHistory();
-        if (history.isEmpty()) {
-            System.out.println("История просмотров пуста.");
-            return;
-        }
-        System.out.println("История просмотров:");
-        int index = 1;
-        for (Task task : history) {
-            System.out.println(index + ". " + task);
-            index++;
         }
     }
 
