@@ -3,7 +3,10 @@ package manager;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.Map;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -136,7 +139,7 @@ class InMemoryTaskManagerTest {
         assertEquals(TaskStatus.DONE, subtask.getStatus());
         assertEquals(TaskStatus.DONE, taskManager.getEpic(1).getStatus()); //Заодно проверим, что статус эпика тоже
         // изменился
-        taskManager.addSubtask("Для проверки", "статуса эпика",1);
+        taskManager.addSubtask("Для проверки", "статуса эпика", 1);
         assertEquals(TaskStatus.IN_PROGRESS, taskManager.getEpic(1).getStatus()); //Проверяем статус эпика IN_PROGRESS
     }
 
@@ -148,5 +151,27 @@ class InMemoryTaskManagerTest {
         assertEquals("Задача изменена", epic.getName());
         assertEquals("Описание", epic.getDescription());
         assertEquals(TaskStatus.NEW, epic.getStatus());
+    }
+
+    @Test
+    public void deleteSubtask_WhenDeleteEpic() {
+        taskManager.addEpic("Эпик", "Описание"); //Создан эпик с ID1
+        taskManager.addSubtask("Подзадача", "Для эпика", 1);
+        taskManager.deleteEpicById(1);
+        assertNull(taskManager.getEpic(1)); // Проверяем, что эпика нет
+        assertNull(taskManager.getSubtask(2)); //Проверяем, что подзадачи нет
+    }
+
+    @Test
+    public void epicDoNotHaveSubtask_WhenSubtaskDelete() {
+        taskManager.addEpic("Эпик", "Создан");
+        taskManager.addSubtask("Подзадача", "C ID2", 1);
+        taskManager.addSubtask("Подзадача", " С ID3", 1);
+        Epic epic = taskManager.getEpic(1);
+        List<Subtask> subtasksInEpic = epic.getSubtasksInEpic();
+        assertEquals(2, subtasksInEpic.size()); //Список внутри эпика хранит две подзадачи
+        taskManager.deleteSubtaskById(2); // Удаляем подзадачу с ID2
+        assertFalse(subtasksInEpic.contains(taskManager.getSubtask(2))); //Проверка на наличие удаленной
+        // подзадачи по ID
     }
 }
