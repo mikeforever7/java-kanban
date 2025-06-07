@@ -1,16 +1,20 @@
 package main;
 
-import manager.Managers;
+import manager.FileBackedTaskManager;
 import manager.TaskManager;
 import model.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = Managers.getDefault();
-        //Дополнительное задание:
+        Path path = Paths.get("c:\\Users\\user\\IdeaProjects\\java-kanban\\taskManager.csv");
+        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(path.toFile());
+        // Доп задание к этому ФЗ в классе FileBackedTaskManager
+        // Здесь не стал удалять, чтобы периодически смотреть как работает программа
         // Создаем задачи.
         taskManager.addTask("Задача один", "Создана");
         taskManager.addTask("Задача Два", "Создана");
@@ -18,7 +22,7 @@ public class Main {
         taskManager.addEpic("Второй эпик", "С ID 4");
         taskManager.addSubtask("Первая подзадача c ID 5", "Для эпика с ID 3", 3);
         taskManager.addSubtask("Вторая подзадача c ID 6", "Для эпика с ID 3", 3);
-        taskManager.addSubtask("Третья подзадача c ID 7", "Для эпика с ID 3", 3);
+        taskManager.addSubtask("Третья подзадача прям новая c ID 7", "Для эпика с ID 3", 3);
         // Вызываем задачи в различном порядке и выводим историю без повторов
         taskManager.getTask(2);
         taskManager.getTask(1);

@@ -7,6 +7,7 @@ public class Task {
     private String description;
     private int id;
     private TaskStatus status;
+    protected TaskType type;
 
 
     public Task(int id, String name, String description) {
@@ -14,6 +15,7 @@ public class Task {
         this.description = description;
         this.id = id;
         status = TaskStatus.NEW;
+        type = TaskType.TASK;
     }
 
     public Task(int id, String name, String description, TaskStatus status) {
@@ -21,6 +23,7 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+        type = TaskType.TASK;
     }
 
     @Override
@@ -63,6 +66,10 @@ public class Task {
 
     public String getName() {
         return name;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public String getDescription() {
