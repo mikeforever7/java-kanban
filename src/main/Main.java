@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         Path path = Paths.get("c:\\Users\\user\\IdeaProjects\\java-kanban\\taskManager.csv");
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(path.toFile());
+        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(path.toFile());
         // Доп задание к этому ФЗ в классе FileBackedTaskManager
         // Здесь не стал удалять, чтобы периодически смотреть как работает программа
         // Создаем задачи.

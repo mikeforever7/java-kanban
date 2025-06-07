@@ -14,7 +14,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
-    public FileBackedTaskManager(File file) {
+    private FileBackedTaskManager(File file) {
         this.file = file;
     }
 
@@ -39,7 +39,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Файл отсутствует");
+            throw new ManagerLoadException("Файл отсутствует");
         }
         return taskManager;
     }
@@ -90,14 +90,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 int epicId = Integer.parseInt(field[5]);
                 return new Subtask(id, field[2], field[4], status, epicId);
             }
-            default -> throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
         }
     }
 
-
     public String toString(Task task) {
         if (task.getType() == null) {
-            throw new IllegalArgumentException("Тип задачи не может быть null.");
+            throw new ManagerSaveException("Тип задачи не может быть null.");
         }
         return switch (task.getType()) {
             case TASK, EPIC -> task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() +

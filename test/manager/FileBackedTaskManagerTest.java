@@ -16,14 +16,10 @@ class FileBackedTaskManagerTest {
     private File tempFile;
 
     @BeforeEach
-    public void beforeEach() {
-        try {
-            tempFile = File.createTempFile("test", ".csv");
-            tempFile.deleteOnExit();
-            taskManager = new FileBackedTaskManager(tempFile);
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка создания файла");
-        }
+    public void beforeEach() throws IOException {
+        tempFile = File.createTempFile("test", ".csv");
+        tempFile.deleteOnExit();
+        taskManager = FileBackedTaskManager.loadFromFile(tempFile);
     }
 
     @Test
