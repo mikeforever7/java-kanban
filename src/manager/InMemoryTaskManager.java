@@ -54,10 +54,8 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         epic.setDuration(Duration.ofMinutes(0));
         epic.setEndTime(null);
-        List<Subtask> filteredSubtasks = epic.getSubtasksInEpic().stream()
+        epic.getSubtasksInEpic().stream()
                 .filter(subtask -> subtask.getStartTime() != null && subtask.getDuration() != null)
-                .toList();
-        filteredSubtasks
                 .forEach(subtask -> {
                     epic.setDuration(epic.getDuration().plus(subtask.getDuration()));
                     if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
