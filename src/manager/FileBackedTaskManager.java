@@ -103,9 +103,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
                 return new Subtask(id, field[2], field[4], status, startTime, duration, epicId);
             }
-            default -> {
-                throw new ManagerLoadException("Неизвестный тип задачи: " + type);
-            }
+            default -> throw new ManagerLoadException("Неизвестный тип задачи: " + type);
+
         }
     }
 

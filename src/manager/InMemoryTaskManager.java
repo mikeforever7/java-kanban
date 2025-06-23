@@ -6,7 +6,6 @@ import model.Task;
 import model.TaskStatus;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -53,23 +52,20 @@ public class InMemoryTaskManager implements TaskManager {
     //Рассчет и установка временных показателей для эпиков
     public void setEpicDurationAndTime(int epicId) {
         Epic epic = epics.get(epicId);
-        Duration duration = Duration.ofMinutes(0);
-        LocalDateTime minStartTime = null;
-        LocalDateTime maxEndTime = null; //Здесь, мне кажется, нужно цикл for оставить
-        for (Subtask subtask : epic.getSubtasksInEpic()) {
-            if (subtask.getStartTime() != null && subtask.getDuration() != null) {
-                duration = duration.plus((subtask.getDuration()));
-                if (minStartTime == null || minStartTime.isAfter(subtask.getStartTime())) {
-                    minStartTime = subtask.getStartTime();
-                }
-                if (maxEndTime == null || maxEndTime.isBefore(subtask.getEndTime())) {
-                    maxEndTime = subtask.getEndTime();
-                }
-            }
-        }
-        epic.setDuration(duration);
-        epic.setStartTime(minStartTime);
-        epic.setEndTime(maxEndTime);
+        epic.setDuration(Duration.ofMinutes(0));
+        epic.setEndTime(null);
+        List<Subtask> filteredSubtasks = epic.getSubtasksInEpic().stream()
+                .filter(subtask -> subtask.getStartTime() != null && subtask.getDuration() != null)
+                .toList();
+        filteredSubtasks
+                .forEach(subtask -> {
+                    epic.setDuration(epic.getDuration().plus(subtask.getDuration()));
+                    if (epic.getStartTime() == null || epic.getStartTime().isAfter(subtask.getStartTime())) {
+                        epic.setStartTime(subtask.getStartTime());
+                    } else if (epic.getEndTime() == null || epic.getEndTime().isBefore(subtask.getEndTime())) {
+                        epic.setEndTime(subtask.getEndTime());
+                    }
+                });
     }
 
     public TreeSet<Task> getPrioritizedTasks() {
@@ -205,7 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
     //Очистка списков
     @Override
     public void deleteAllTasks() {
-        tasks.values().stream()
+        tasks.values()
                 .forEach(task -> {
                     historyManager.remove(task.getId());
                     prioritizedTasks.remove(task);
@@ -215,9 +211,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
-        epics.values().stream()
+        epics.values()
                 .forEach(epic -> {
-                    epic.getSubtasksInEpic().stream()
+                    epic.getSubtasksInEpic()
                             .forEach(subtask -> {
                                 deleteSubtaskById(subtask.getId());
                                 prioritizedTasks.remove(subtask);
@@ -229,7 +225,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() {
-        subtasks.values().stream()
+        subtasks.values()
                 .forEach(subtask -> {
                     historyManager.remove(subtask.getId());
                     prioritizedTasks.remove(subtask);
@@ -260,7 +256,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicById(int id) {
         Epic epic = epics.get(id);
         List<Subtask> subtasksCopy = new ArrayList<>(epic.getSubtasksInEpic());
-        subtasksCopy.stream()
+        subtasksCopy
                 .forEach(subtask -> {
                     deleteSubtaskById(subtask.getId());
                     prioritizedTasks.remove(subtask);
