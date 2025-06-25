@@ -7,6 +7,7 @@ import model.TaskStatus;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
@@ -15,12 +16,15 @@ public interface TaskManager {
     //Проверка выполнения подзадач
     TaskStatus checkEpicStatus(int epicId);
 
+    //Вычисление и установка временных параметров у эпика
+    void setEpicDurationAndTime(int epicId);
+
     //Обновление задач
-    void updateTask(int id, String newName, String newDescription, TaskStatus newStatus);
+    void updateTask(Task task);
 
-    void updateEpic(int id, String newName, String newDescription);
+    void updateEpic(Epic epic);
 
-    void updateSubtask(int id, String newName, String newDescription, TaskStatus newStatus);
+    void updateSubtask(Subtask subtask);
 
     //Получить по id
     Task getTask(int id);
@@ -30,11 +34,11 @@ public interface TaskManager {
     Subtask getSubtask(int id);
 
     //Добавление задач
-    void addTask(String name, String description);
+    void addTask(Task task);
 
-    void addEpic(String name, String description);
+    void addEpic(Epic epic);
 
-    void addSubtask(String name, String description, int epicId);
+    void addSubtask(Subtask subtask);
 
     //Очистка списков
     void deleteAllTasks();
@@ -51,4 +55,10 @@ public interface TaskManager {
     void deleteSubtaskById(int id);
 
     Map<Integer, Task> getTasks();
+
+    Map<Integer, Epic> getEpics();
+
+    Map<Integer, Subtask> getSubtasks();
+
+    TreeSet<Task> getPrioritizedTasks();
 }
