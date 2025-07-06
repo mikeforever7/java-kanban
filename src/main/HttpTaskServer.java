@@ -1,6 +1,6 @@
 package main;
 
-import Handler.*;
+import handler.*;
 import com.sun.net.httpserver.HttpServer;
 
 import manager.Managers;

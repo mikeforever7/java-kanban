@@ -1,7 +1,7 @@
 package main;
 
-import Handler.DurationAdapter;
-import Handler.LocalDateTimeAdapter;
+import handler.DurationAdapter;
+import handler.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import manager.InMemoryTaskManager;

@@ -1,4 +1,4 @@
-package Handler;
+package handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public class PriorityHandler extends BaseHttpHandler {
+public class HistoryHandler extends BaseHttpHandler {
 
     private final TaskManager taskManager;
     private final Gson gson = new GsonBuilder()
@@ -18,7 +18,7 @@ public class PriorityHandler extends BaseHttpHandler {
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .create();
 
-    public PriorityHandler(TaskManager taskManager) {
+    public HistoryHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
@@ -26,9 +26,9 @@ public class PriorityHandler extends BaseHttpHandler {
     public void handle(HttpExchange httpExchange) throws IOException {
         try {
             String[] pathParts = httpExchange.getRequestURI().getPath().split("/");
-            if (httpExchange.getRequestMethod().equals("GET") && pathParts[1].equals("prioritized") && pathParts.length == 2) {
-                System.out.println("Началась обработка /prioritized запроса от клиента.");
-                String response = gson.toJson(taskManager.getPrioritizedTasks());
+            if (httpExchange.getRequestMethod().equals("GET") && pathParts[1].equals("history") && pathParts.length == 2) {
+                System.out.println("Началась обработка /history запроса от клиента.");
+                String response = gson.toJson(taskManager.getHistory());
                 sendText(httpExchange, response);
             } else {
                 sendNotFound(httpExchange, "Такого эндпоинта не существует");
