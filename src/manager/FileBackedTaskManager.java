@@ -15,7 +15,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
-    FileBackedTaskManager(File file) {
+    public FileBackedTaskManager() {
+        this.file = new File("tasks.csv"); // Файл будет создан в текущей директории
+    }
+
+    public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
