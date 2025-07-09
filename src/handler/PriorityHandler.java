@@ -1,22 +1,14 @@
 package handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import manager.TaskManager;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class PriorityHandler extends BaseHttpHandler {
 
     private final TaskManager taskManager;
-    private final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
 
     public PriorityHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -33,8 +25,8 @@ public class PriorityHandler extends BaseHttpHandler {
             } else {
                 sendNotFound(httpExchange, "Такого эндпоинта не существует");
             }
-        } catch (RuntimeException e) {
-            sendText(httpExchange, "Такого вообще нет", 400);
+        } catch (Exception e) {
+            sendText(httpExchange, "Критическая ошибка", 400);
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
     }

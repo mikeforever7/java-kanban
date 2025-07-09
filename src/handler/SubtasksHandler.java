@@ -1,7 +1,5 @@
 package handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import manager.CrossTasksInTimeException;
 import manager.TaskManager;
@@ -13,18 +11,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SubtasksHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
-    private final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
 
     public SubtasksHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -58,7 +50,7 @@ public class SubtasksHandler extends BaseHttpHandler {
                     sendNotFound(httpExchange, "Такого эндпоинта не существует");
                 }
             }
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             sendText(httpExchange, "Критическая ошибка", 400);
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
@@ -89,7 +81,7 @@ public class SubtasksHandler extends BaseHttpHandler {
                 }
             } catch (CrossTasksInTimeException e) {
                 sendHasInteractions(httpExchange, e.getMessage());
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 sendNotCorrect(httpExchange, "Подзадача не корректна");
             }
         }

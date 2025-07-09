@@ -1,13 +1,17 @@
 package handler;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import main.HttpTaskServer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
+
+    protected Gson gson = HttpTaskServer.getGson();
 
     protected void sendText(HttpExchange httpExchange, String text) throws IOException {
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
