@@ -6,9 +6,6 @@ import model.Task;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
@@ -28,11 +25,9 @@ public class HistoryTest extends HttpTaskServerTest {
         taskManager.getTask(3);
         taskManager.getEpic(1);
         taskManager.getTask(2);
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/history");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        String url = "http://localhost:8080/history";
         // вызываем рест, отвечающий за получение истории
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         List<Task> responseTasks = gson.fromJson(response.body(), new HistoryListTypeToken().getType());

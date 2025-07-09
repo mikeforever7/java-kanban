@@ -5,9 +5,6 @@ import model.Task;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,11 +26,9 @@ public class PriorityTest extends HttpTaskServerTest {
                 LocalDateTime.of(2025, 5, 12, 10, 0), Duration.ofMinutes(60)));
         taskManager.addTask(new Task("Test task3", "Testing task3",
                 LocalDateTime.of(2024, 5, 12, 10, 0), Duration.ofMinutes(30)));
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/prioritized");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        String url = "http://localhost:8080/prioritized";
         // вызываем рест, отвечающий за получение истории
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         List<Task> responseTasks = gson.fromJson(response.body(), new PriorityListTypeToken().getType());

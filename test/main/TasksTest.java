@@ -5,9 +5,6 @@ import model.Task;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -28,16 +25,12 @@ public class TasksTest extends HttpTaskServerTest {
                 LocalDateTime.now(), Duration.ofMinutes(5));
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+        String url = "http://localhost:8080/tasks";
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getResponseForPost(taskJson, url);
         // проверяем код ответа
         assertEquals(201, response.statusCode());
         // проверяем, что создалась одна задача с корректным именем
-
         assertNotNull(taskManager.getTasks(), "Задачи не возвращаются");
         assertEquals(1, taskManager.getTasks().size(), "Некорректное количество задач");
         assertEquals("Test task", taskManager.getTasks().get(1).getName(), "Некорректное имя задачи");
@@ -45,9 +38,8 @@ public class TasksTest extends HttpTaskServerTest {
         Task task2 = new Task(6, "Test task", "Testing task",
                 LocalDateTime.now(), Duration.ofMinutes(5));
         String task2Json = gson.toJson(task2);
-        HttpRequest request2 = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(task2Json)).build();
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getResponseForPost(task2Json, url);
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - добавлена задача с несуществущим id");
     }
@@ -60,12 +52,9 @@ public class TasksTest extends HttpTaskServerTest {
                 LocalDateTime.now(), Duration.ofMinutes(5));
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
+        String url = "http://localhost:8080/tasks";
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getResponseForPost(taskJson, url);
         // проверяем код ответа
         assertEquals(201, response.statusCode());
         // проверяем, что создалась одна задача с корректным именем
@@ -76,9 +65,8 @@ public class TasksTest extends HttpTaskServerTest {
         Task task2 = new Task(6, "Test task", "Testing task",
                 LocalDateTime.now(), Duration.ofMinutes(5));
         String task2Json = gson.toJson(task2);
-        HttpRequest request2 = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(task2Json)).build();
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getResponseForPost(task2Json, url);
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - добавлена задача с несуществущим id");
     }
@@ -88,20 +76,16 @@ public class TasksTest extends HttpTaskServerTest {
         // создаём задачу
         taskManager.addTask(new Task("Test task", "Testing task",
                 LocalDateTime.now(), Duration.ofMinutes(5)));
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/1");
-
-        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        String url = "http://localhost:8080/tasks/1";
         // вызываем рест, отвечающий за удаление задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "DELETE");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         // проверяем, что задача удалена
         assertNotNull(taskManager.getTasks(), "Задачи не возвращаются");
         assertEquals(0, taskManager.getTasks().size(), "Некорректное количество задач");
         // И отдельно проверяем ответ при неуспешном сценарии
-        HttpResponse<String> response2 = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getNotPostResponse(url, "DELETE");
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - задача для удаления не существует");
     }
@@ -111,13 +95,10 @@ public class TasksTest extends HttpTaskServerTest {
         // создаём задачу
         taskManager.addTask(new Task("Test task", "Testing task",
                 LocalDateTime.now(), Duration.ofMinutes(5)));
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks/1");
-        URI badUrl = URI.create("http://localhost:8080/tasks/45");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        String url = "http://localhost:8080/tasks/1";
+        String badUrl = "http://localhost:8080/tasks/45";
         // вызываем рест, отвечающий за получение задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         Task responseTask = gson.fromJson(response.body(), Task.class);
@@ -125,8 +106,7 @@ public class TasksTest extends HttpTaskServerTest {
         assertNotNull(responseTask, "Ответ не содержит задачу");
         assertEquals("Test task", responseTask.getName(), "Некорректное имя задачи");
         // И отдельно проверяем ответ при неуспешном сценарии
-        HttpRequest request2 = HttpRequest.newBuilder().uri(badUrl).GET().build();
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getNotPostResponse(badUrl, "GET");
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - задачи не существует");
     }
@@ -137,12 +117,9 @@ public class TasksTest extends HttpTaskServerTest {
         taskManager.addTask(new Task("Test task", "Testing task"));
         taskManager.addTask(new Task("Test task2", "Testing task2"));
         // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/tasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url)
-                .header("Content-Type", "application/json").GET().build();
+        String url = "http://localhost:8080/tasks";
         // вызываем рест, отвечающий за получение задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         Map<Integer, Task> responseTasks = gson.fromJson(response.body(), new TaskListTypeToken().getType());
@@ -153,7 +130,7 @@ public class TasksTest extends HttpTaskServerTest {
         assertEquals(2, responseTasks.size(), "Некорректное количество задач");
         // И отдельно проверяем ответ при неуспешном сценарии
         taskManager.deleteAllTasks();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(404, response.statusCode(), "Нужно - список задач пуст");
     }

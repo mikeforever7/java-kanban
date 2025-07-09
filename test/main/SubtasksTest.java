@@ -6,9 +6,6 @@ import model.Subtask;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,12 +27,9 @@ public class SubtasksTest extends HttpTaskServerTest {
                 LocalDateTime.now(), Duration.ofMinutes(5), 1);
         // конвертируем её в JSON
         String subtaskJson = gson.toJson(subtask);
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(subtaskJson)).build();
+        String url = "http://localhost:8080/subtasks";
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getResponseForPost(subtaskJson, url);
         // проверяем код ответа
         assertEquals(201, response.statusCode());
         // проверяем, что создалась одна задача с корректным именем
@@ -45,18 +39,16 @@ public class SubtasksTest extends HttpTaskServerTest {
         // И отдельно проверяем ответ при неуспешном сценарии
         Subtask subtask2 = new Subtask("Test subtask", "Testing subtask", 2);
         String subtask2Json = gson.toJson(subtask2);
-        HttpRequest request2 = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(subtask2Json)).build();
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getResponseForPost(subtask2Json, url);
         // проверяем код ответа
         assertEquals(400, response2.statusCode(), "Нужно - подзадача некорректна, эпика для нее нет");
         // Еще один неуспешный сценарий на пересечение
         Subtask subtask3 = new Subtask("Test subtask", "Testing subtask",
                 LocalDateTime.now(), Duration.ofMinutes(5), 1);
         String subtask3Json = gson.toJson(subtask3);
-        HttpRequest request3 = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(subtask3Json)).build();
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response3 = client.send(request3, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response3 = getResponseForPost(subtask3Json, url);
         // проверяем код ответа
         assertEquals(406, response3.statusCode(), "Нужно - Задачи пересекаются по времени");
     }
@@ -70,12 +62,9 @@ public class SubtasksTest extends HttpTaskServerTest {
                 LocalDateTime.now(), Duration.ofMinutes(5), 1);
         // конвертируем её в JSON
         String subtaskJson = gson.toJson(subtask);
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(subtaskJson)).build();
+        String url = "http://localhost:8080/subtasks";
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getResponseForPost(subtaskJson, url);
         // проверяем код ответа
         assertEquals(201, response.statusCode());
         // проверяем, что создалась одна задача с корректным именем
@@ -86,9 +75,8 @@ public class SubtasksTest extends HttpTaskServerTest {
         Subtask subtask2 = new Subtask(3, "Test subtask", "Testing subtask",
                 LocalDateTime.now(), Duration.ofMinutes(5), 1);
         String subtask2Json = gson.toJson(subtask2);
-        HttpRequest request2 = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(subtask2Json)).build();
         // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getResponseForPost(subtask2Json, url);
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - подзадача с таким id не существует");
     }
@@ -99,12 +87,9 @@ public class SubtasksTest extends HttpTaskServerTest {
         taskManager.addEpic(new Epic("Эпик", "Для подзадачи"));
         taskManager.addSubtask(new Subtask("Test subtask", "Testing subtask",
                 LocalDateTime.now(), Duration.ofMinutes(5), 1));
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks/2");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        String url = "http://localhost:8080/subtasks/2";
         // вызываем рест, отвечающий за удаление подзадач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "DELETE");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         // проверяем, что подзадача удалена, в том числе из эпика
@@ -113,9 +98,8 @@ public class SubtasksTest extends HttpTaskServerTest {
         assertEquals(0, taskManager.getEpic(1).getSubtasksInEpic().size(),
                 "Некорректное количество подзадач в эпике");
         // И отдельно проверяем ответ при неуспешном сценарии
-        URI badUrl = URI.create("http://localhost:8080/subtasks/8");
-        HttpRequest request2 = HttpRequest.newBuilder().uri(badUrl).DELETE().build();
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        String badUrl = "http://localhost:8080/subtasks/8";
+        HttpResponse<String> response2 = getNotPostResponse(badUrl, "DELETE");
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Должен быть неверный путь");
     }
@@ -126,12 +110,9 @@ public class SubtasksTest extends HttpTaskServerTest {
         taskManager.addEpic(new Epic("Эпик", "Для подзадачи"));
         taskManager.addSubtask(new Subtask("Test subtask", "Testing subtask",
                 LocalDateTime.now(), Duration.ofMinutes(5), 1));
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks/2");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        String url = "http://localhost:8080/subtasks/2";
         // вызываем рест, отвечающий за получение задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         Subtask responseSubtask = gson.fromJson(response.body(), Subtask.class);
@@ -140,7 +121,7 @@ public class SubtasksTest extends HttpTaskServerTest {
         assertEquals("Test subtask", responseSubtask.getName(), "Некорректное имя подзадачи");
         // И отдельно проверяем ответ при неуспешном сценарии
         taskManager.deleteAllSubtasks();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(404, response.statusCode(), "Нужно - подзадачи не существует");
     }
@@ -152,13 +133,10 @@ public class SubtasksTest extends HttpTaskServerTest {
         taskManager.addSubtask(new Subtask("Test subtask", "Testing subtask",
                 LocalDateTime.now(), Duration.ofMinutes(5), 1));
         taskManager.addSubtask(new Subtask("Test subtask2", "Testing subtask2", 1));
-        // создаём HTTP-клиент и запрос
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtasks");
-        URI badUrl = URI.create("http://localhost:8080/sssssubtasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        String url = "http://localhost:8080/subtasks";
+        String badUrl = "http://localhost:8080/sssssubtasks";
         // вызываем рест, отвечающий за получение задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = getNotPostResponse(url, "GET");
         // проверяем код ответа
         assertEquals(200, response.statusCode());
         Map<Integer, Subtask> responseSubtasks = gson.fromJson(response.body(), new SubtaskListTypeToken().getType());
@@ -168,8 +146,7 @@ public class SubtasksTest extends HttpTaskServerTest {
         assertEquals("Testing subtask2", responseSubtasks.get(3).getDescription());
         assertEquals(2, responseSubtasks.size(), "Некорректное количество задач");
         // И отдельно проверяем ответ при неуспешном сценарии
-        HttpRequest request2 = HttpRequest.newBuilder().uri(badUrl).GET().build();
-        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response2 = getNotPostResponse(badUrl, "GET");
         // проверяем код ответа
         assertEquals(404, response2.statusCode(), "Нужно - неверный путь");
     }
