@@ -1,5 +1,6 @@
 package main;
 
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.*;
 
@@ -8,6 +9,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+        TaskManager taskManager = new InMemoryTaskManager();
     }
 
     private static void printHistory(TaskManager taskManager) {

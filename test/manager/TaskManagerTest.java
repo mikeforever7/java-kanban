@@ -205,8 +205,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addSubtask(new Subtask("Подзадача", "с длительностью 40мин",
                 LocalDateTime.of(2025, 2, 1, 10, 0), Duration.ofMinutes(40), 1));
         assertEquals(4200, taskManager.getEpic(1).getDuration().getSeconds());
-        taskManager.addSubtask(new Subtask("Подзадача", "c пересечением по вермени",
-                LocalDateTime.of(2025, 2, 1, 9, 0), Duration.ofMinutes(100), 1));
+        assertThrows(CrossTasksInTimeException.class, () -> {
+            taskManager.addSubtask(new Subtask("Подзадача", "c пересечением по вермени",
+                    LocalDateTime.of(2025, 2, 1, 9, 0), Duration.ofMinutes(100), 1));
+        });
         //Задача с пересечением во времени не добавлена, поэтому не должна влиять на длительность эпика
         assertEquals(4200, taskManager.getEpic(1).getDuration().getSeconds());
         //Проверка startTime и endTime у эпика в зависимости от подзадач
@@ -225,13 +227,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldNotAddTask_WhenTimeCrossed() {
         taskManager.addTask(new Task("Подзадача", "для теста",
                 LocalDateTime.of(2025, 1, 1, 10, 0), Duration.ofMinutes(60)));
-        taskManager.addTask(new Task("Подзадача", "с пересечением сначла",
-                LocalDateTime.of(2025, 1, 1, 9, 50), Duration.ofMinutes(30)));
-        taskManager.addTask(new Task("Подзадача", "с пересечением в конце",
-                LocalDateTime.of(2025, 1, 1, 10, 50), Duration.ofMinutes(30)));
-        taskManager.addTask(new Task("Подзадача", "с полным охватом по времени",
-                LocalDateTime.of(2025, 1, 1, 9, 0), Duration.ofMinutes(200)));
-        assertEquals(1, taskManager.getTasks().size());
+        assertThrows(CrossTasksInTimeException.class, () -> {
+            taskManager.addTask(new Task("Подзадача", "с пересечением сначла",
+                    LocalDateTime.of(2025, 1, 1, 9, 50), Duration.ofMinutes(30)));
+        });
+        assertThrows(CrossTasksInTimeException.class, () -> {
+            taskManager.addTask(new Task("Подзадача", "с пересечением в конце",
+                    LocalDateTime.of(2025, 1, 1, 10, 50), Duration.ofMinutes(30)));
+        });
+        assertThrows(CrossTasksInTimeException.class, () -> {
+            taskManager.addTask(new Task("Подзадача", "с полным охватом по времени",
+                    LocalDateTime.of(2025, 1, 1, 9, 0), Duration.ofMinutes(200)));
+            assertEquals(1, taskManager.getTasks().size());
+        });
     }
 
     @Test
@@ -256,8 +264,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addEpic(new Epic("Эпик", "c id 1"));
         taskManager.addTask(new Task("Подзадача", "с пересечением до Task",
                 LocalDateTime.of(2025, 1, 1, 10, 0), Duration.ofMinutes(30)));
-        taskManager.addSubtask(new Subtask("Подзадача", "с пересечением до Task",
-                LocalDateTime.of(2025, 1, 1, 9, 40), Duration.ofMinutes(30), 1));
+        assertThrows(CrossTasksInTimeException.class, () -> {
+            taskManager.addSubtask(new Subtask("Подзадача", "с пересечением до Task",
+                    LocalDateTime.of(2025, 1, 1, 9, 40), Duration.ofMinutes(30), 1));
+        });
         assertEquals(1, taskManager.getTasks().size());
     }
 }

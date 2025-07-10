@@ -38,7 +38,14 @@ public class Epic extends Task {
         this.endTime = endTime;
     }
 
+    public void setSubtasksInEpic(List<Subtask> subtasksInEpic) {
+        this.subtasksInEpic = subtasksInEpic;
+    }
+
     public List<Subtask> getSubtasksInEpic() {
+        if (subtasksInEpic == null) {
+            subtasksInEpic = new ArrayList<>();
+        }
         return subtasksInEpic;
     }
 }

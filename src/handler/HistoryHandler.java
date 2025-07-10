@@ -1,0 +1,33 @@
+package handler;
+
+import com.sun.net.httpserver.HttpExchange;
+import manager.TaskManager;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+public class HistoryHandler extends BaseHttpHandler {
+
+    private final TaskManager taskManager;
+
+    public HistoryHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
+    @Override
+    public void handle(HttpExchange httpExchange) throws IOException {
+        try {
+            String[] pathParts = httpExchange.getRequestURI().getPath().split("/");
+            if (httpExchange.getRequestMethod().equals("GET") && pathParts[1].equals("history") && pathParts.length == 2) {
+                System.out.println("Началась обработка /history запроса от клиента.");
+                String response = gson.toJson(taskManager.getHistory());
+                sendText(httpExchange, response);
+            } else {
+                sendNotFound(httpExchange, "Такого эндпоинта не существует");
+            }
+        } catch (Exception e) {
+            sendText(httpExchange, "Критическая ошибка", 400);
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+    }
+}
